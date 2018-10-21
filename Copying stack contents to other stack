@@ -1,0 +1,161 @@
+#include <iostream>
+#define max 5 
+using namespace std;
+
+class stackcopy
+{
+	char s1[max],s2[max],temp[max];
+	int top,top1,top2;
+public:
+	stackcopy()
+	{
+		top=-1;top1=-1;top2=-1;
+		for(int i=0;i<max;i++)
+		{
+			s1[i]='\0';
+			temp[i]='\0';
+			s2[i]='\0';
+		}
+	}
+	void push1(char);
+	void push2(char);
+	void pusht(char);
+	char peek1(int);
+	char peek2();
+	char peekt(int);
+	void display();
+	void copy();
+};
+void stackcopy::push1(char ch)
+{
+	if(top<max)
+	{
+		top++;
+		s1[top]=ch;
+	}
+	else
+	cout<<"Stack OverFlow"<<endl;
+}
+void stackcopy::pusht(char ch)
+{
+	if(top1<max)
+	{
+		top1++;
+		temp[top1]=ch;
+	}
+	else
+	cout<<"OverFlow"<<endl;
+}
+void stackcopy::push2(char ch)
+{
+	if(top2<max)
+	{
+		top2++;
+		s2[top2]=ch;
+	}
+	else
+	cout<<"OverFlow"<<endl;
+}
+char stackcopy::peek1(int a)
+{
+		return s1[a];
+}
+char stackcopy::peekt(int a)
+{
+		return temp[a];
+}
+char stackcopy::peek2()
+{
+	  return s2[top2];	
+}
+void stackcopy::copy()
+{
+	int t=top,t1;
+	char catcher;
+	for(int i=top;i>=0;i--)
+	{
+
+		if(top1<=top)
+		{
+		 catcher=peek1(t);
+		 if(islower(catcher))
+		 catcher=toupper(catcher);
+		 else
+		  catcher=tolower(catcher);
+		 pusht(catcher);
+		 t=t-1;
+		 
+		}
+		else
+			cout<<"All Data Has Been Accessed"<<endl;
+	}
+	t1=top1;
+	for (int i = top1; i>=0; i--)
+	{
+
+		if(t1!=-1)
+		{
+			catcher=peekt(t1);
+			push2(catcher);
+			t1--;
+			
+		}
+		else					   
+			cout<<"All Data Has Been Accessed"<<endl;
+	}
+}
+void stackcopy::display()
+{
+	cout<<"\n\t\tStack 1\n\n";
+	for(int i=top;i>=0;i--)
+	{
+	  cout<<"\t\t| "<<s1[i]<<" |"<<i<<endl;
+	  cout<<"\t\t____"<<endl;
+	}
+	  cout<<"\t       --------"<<endl;	
+	  
+	cout<<"\n\t\tStack 2\n\n";
+	for(int i=top1;i>=0;i--)
+	{
+	  cout<<"\t\t| "<<s2[i]<<" |"<<i<<endl;
+	  cout<<"\t\t____"<<endl;
+	}
+	  cout<<"\t      --------"<<endl;
+		
+} 
+int main()
+{
+	stackcopy s;
+	char ch,input;
+	do
+	{
+	cout<<"1.Push\n2.Copy\n3.Display\n4.Exit"<<endl;
+	   cout<<"Enter Choice: ";
+	   cin>>ch;
+	   switch (ch)
+	   {
+	   case '1':
+		   cout<<"Push Character: ";
+		   cin>>input;
+		   if((input>='a' && input<='z') ||(input>='A' && input<='Z')) 
+		   s.push1(input);
+		   else
+			   cout<<"Invalid input"<<endl;
+		   break;
+	   case '2':
+		   s.copy();
+		   break;
+	   case '3':
+		   system("cls"); 
+		   s.display();
+		   break;
+	   case '4':
+		   exit(-1);
+	   default:
+		   break;
+	   }
+	} while (true);
+
+	system("pause");
+	return 0;
+}
