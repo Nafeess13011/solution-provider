@@ -1,0 +1,273 @@
+#include <iostream>
+#define max 100
+using namespace std;
+
+class postfix
+{
+	char infix[max],stack[max],pfix[max],prfix[max];
+	int top,inc,inc2;
+public:
+	postfix()
+	{
+		top=-1;
+		inc=0;
+		inc2=0;
+		for (int i = 0; i < max; i++)
+		{
+			infix[i]='\0';
+			stack[i]='\0';
+			pfix[i]='\0';
+			prfix[i]='\0';
+		}
+	}
+	void input();
+	void scan();
+	void push(char);
+	char pop();
+	void post(char);
+	void pre(char);
+	void display();
+	void scan2();
+};
+void postfix::input()
+{
+	cout<<"Enter Infix Expression: ";
+	cin>>infix;
+}
+void postfix::post(char c)
+{
+	
+	if(inc<max)
+	{
+	 pfix[inc]=c;
+     inc++;
+	}
+	else
+		cout<<"PostFix String Is Full"<<endl;
+}
+ 
+void postfix::pre(char c)
+{
+	
+	if(inc2<max)
+	{
+	 prfix[inc2]=c;
+     inc2++;
+	}
+	else
+		cout<<"PreFix String Is Full"<<endl;
+}
+void postfix::display()
+{
+	if(inc>0)
+	cout<<"PostFix String: "<<pfix<<endl;
+	else
+		cout<<"PostFix Not Manipulated"<<endl;
+	if(inc2>0)
+	cout<<"PreFix String: "<<prfix<<endl;
+	else
+		cout<<"PreFix Not Manipulated"<<endl;
+}
+void postfix::push(char c)
+{
+	if(top<max)
+	{
+		top++;
+		stack[top]=c;
+	}
+	else 
+		cout<<"OverFlow"<<endl;
+}
+char postfix::pop()
+{
+	char poped;
+	if(top>=-1)
+	{
+		poped=stack[top];
+		stack[top]='\0';
+		top--;
+		return poped;	
+	}
+	else
+		cout<<"UnderFlow"<<endl;
+} 
+void postfix::scan()
+{
+	int len=0;
+	 char catche;
+	len=strlen(infix);
+	for(int i=0;i<len;i++)
+	{
+		
+		if(infix[i]!='+' && infix[i]!='-' && infix[i]!='^' && infix[i]!='*' && infix[i]!='/' && infix[i]!='$' && infix[i]!='(' && infix[i]!=')')
+			post(infix[i]);
+		else if(infix[i]=='(')
+		   push(infix[i]);
+		else if(infix[i]=='+' || infix[i]=='-' || infix[i]=='*' || infix[i]=='/' || infix[i]=='^' || infix[i]=='$')
+		{
+			if(stack[top]=='\0')
+				push(infix[i]);
+			else if(stack[top]=='(')
+				push(infix[i]);
+			else if(((infix[i]=='/' || infix[i]=='*')&&(stack[top]=='+' || stack[top]=='-')) ||((infix[i]=='^' || infix[i]=='$')&&(stack[top]=='/' || stack[top]=='*')))
+			 push(infix[i]);
+			else
+			{
+				  catche=pop();
+				  post(catche);
+				  push(infix[i]);
+
+			}  
+		
+		}
+		else if(infix[i]==')')
+		{
+			for(int i=top;stack[top]!='(';i--)
+			{
+				catche=pop();
+				if(catche!='(')
+				post(catche);
+			}
+			if(stack[top]=='(')
+			{
+				catche=pop();
+				catche='\0';
+			}
+			
+		}
+		else 
+		{
+			catche=pop();
+			post(catche);
+		}
+
+	}
+	for(int i=top;stack[i]=='-' ||stack[i]=='+' ||stack[i]=='*' ||stack[i]=='/' ||stack[i]=='$';i--)
+				{
+					catche=pop();
+					post(catche);
+
+				} 
+}
+void postfix::scan2()
+{
+	int len1=0,len2=0;
+	char in2[max];
+	len1=strlen(infix);
+	len1=len1-1;
+	while(len1>=0)
+	{
+		in2[len2]=infix[len1];
+		if(in2[len2]=='(')
+			in2[len2]=')';
+		else if(in2[len2]==')')
+			in2[len2]='(';
+		else
+			in2[len2]=in2[len2];
+		len2++;
+		len1--;
+	}
+	in2[len2]='\0';
+	system("cls");
+	cout<<"Reversed Infix: "<<in2<<endl;
+	char catche;
+	int len;
+	len=strlen(in2);
+	for (int i = 0; i<len; i++)
+	{
+		if(in2[i]!='+' && in2[i]!='-' && in2[i]!='^' && in2[i]!='*' && in2[i]!='/' && in2[i]!='$' && in2[i]!='(' && in2[i]!=')')
+			pre(in2[i]);
+	   else if(in2[i]=='(')
+		   pre(in2[i]);
+		else if(in2[i]==')')				  
+			{
+				
+				for(int i=top;stack[i]!='(';i--)
+				{
+					
+					
+					catche=pop();
+					pre(catche);
+					
+				}
+				
+				 if(stack[top]=='(')
+				 {
+					 catche=pop();
+					 catche='\0';
+				 }
+			}
+	   else if(in2[i]=='+' || in2[i]=='-' || in2[i]=='^' || in2[i]=='*' || in2[i]=='/' ||in2[i]=='$')
+	   {
+		   	if(stack[top]=='\0')
+				push(in2[i]);
+			else if(stack[top]=='(')
+				push(in2[i]);
+			else if((in2[i]=='/' || in2[i]=='*' ) && (stack[top]=='+' || stack[top]=='-'))
+				push(in2[i]);
+			else if ((in2[i]=='^' || in2[i]=='$') && (stack[top]=='/' || stack[top]=='*'))
+				push(in2[i]);
+			else if(((in2[i]=='+' || in2[i]=='-') && (stack[top]=='+' || stack[top]=='-'))||((in2[i]=='/' || in2[i]=='*') && (stack[top]=='/' || stack[top]=='*'))||((in2[i]=='^' || in2[i]=='$') && (stack[top]=='^' || stack[top]=='$')) )
+				push(in2[i]);
+			else if((((in2[i]=='+' || in2[i]=='-') && ( stack[top]=='/'|| stack[top]=='*')) ||(in2[i]=='/' || in2[i]=='*') && (stack[top]=='$')))
+			{
+				catche=pop();
+				pre(catche);
+				push(infix[i]);
+			}
+			
+			else
+			{
+				catche=pop();
+				pre(catche); 
+			}
+	   }
+	}
+           for(int i=top;stack[i]=='-' ||stack[i]=='+' ||stack[i]=='*' ||stack[i]=='/' ||stack[i]=='$';i--)
+				{
+					catche=pop();
+					pre(catche);
+				}
+}
+int main()
+{
+	postfix p;
+	char choice,ret;
+	do
+	{
+	 cout<<"\t\t\tPress 1 to Input Infix String"<<endl;
+	 cout<<"\t\t\tPress 2 to convert Infix String to PostFix String"<<endl;
+	 cout<<"\t\t\tPress 3 to Convert Infix String to Prefix String"<<endl;
+	 cout<<"\t\t\tPress 4 to Display Postfix String"<<endl;
+	 cout<<"\t\t\tPress 5 to Exit"<<endl;
+	 cout<<"\n\t\t\tEnter Your Choice: ";
+	 cin>>choice;
+	 switch(choice)
+	 {
+	 case '1':
+		 p.input();
+		 break;
+	 case '2':
+		 p.scan();
+		 ret=p.pop();
+		 if(ret!=')' && ret!='(')
+		 p.post(ret);
+		 break;
+	 case '3':
+		 p.scan2();
+		 ret=p.pop();
+		 if(ret!=')' && ret!='(')
+		 p.pre(ret);
+		 break;
+	 case '4':
+		 p.display();
+		 break;
+	 case '5':
+		 exit(-1);
+	 default:
+		 cout<<"Invalid Choice";
+	 }
+	} while (true);
+	system("pause");
+	return 0;
+}
