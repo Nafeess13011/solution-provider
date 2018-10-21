@@ -1,0 +1,159 @@
+#include <iostream>
+#define max 100
+using namespace std;
+
+class postfix
+{
+	char pofix[max], stack[max];
+	int top,result;
+public:
+	postfix()
+	{
+		top=-1;
+		result=0;
+		for (int i = 0; i < max; i++)
+		{
+			stack[i]=0;
+			pofix[i]='\0';
+		}
+	}
+	void input();
+	void scan();
+	void push(char);
+	char pop();
+	void display();
+};
+void postfix::input()
+{
+	cout<<"Enter PostFix Expression: ";
+	cin>>pofix;
+	int l=0,countO=0,countP=0,retain=0;
+	l=strlen(pofix);
+	for (int i = 0; i < l; i++)
+	{
+		if(pofix[i]>='1' && pofix[i]<='9')
+			countO++;
+		else if(pofix[i]=='+' ||pofix[i]=='-' ||pofix[i]=='*' ||pofix[i]=='/' ||pofix[i]=='^' || pofix[i]=='$')
+			countP++;
+		else
+		{
+			cout<<"Invalid Input At Position"<<i+1<<endl;
+         	break;
+		}
+	}
+	retain=countO-countP;
+	while(retain!=1)
+	{
+		cout<<"Number of Operator!=Number of Operand-1"<<endl;
+		break;
+	}
+
+}
+void postfix::display()
+{
+	 result=result-48;
+	cout<<"Result: "<<result<<endl;
+}
+void postfix::push(char c)
+{
+	if(top<max)
+	{
+		top++;
+		stack[top]=c;
+	}
+	else 
+		cout<<"OverFlow"<<endl;
+}
+char postfix::pop()
+{
+	char poped;
+	if(top>=-1)
+	{
+		poped=stack[top];
+		stack[top]='\0';
+		top--;
+		return poped;	
+	}
+	else
+		cout<<"UnderFlow"<<endl;
+}
+void  postfix::scan()
+{
+	 char catche;
+	 int len=0,a,b;
+	 len=strlen(pofix);
+	for(int i=0;i<len;i++)
+	{
+
+		if(pofix[i]!='-' && pofix[i]!='+' && pofix[i]!='*' && pofix[i]!='/' && pofix[i]!='^' && pofix[i]!='$')
+			push(pofix[i]);
+		else if(pofix[i]=='-' ||pofix[i]=='+' ||pofix[i]=='*' ||pofix[i]=='/' ||pofix[i]=='^' ||pofix[i]=='$')
+		{
+			   catche=pop();
+			   b=catche-48;
+			   catche=pop();
+			   a=catche-48;
+			   switch(pofix[i])
+			   {
+			   case '+':
+				     result=a+b;
+					 break;
+			   case '-':
+				     result=a-b;
+					 break;
+			   case '*':
+				     result=a*b;
+					 break;
+			   case '/':
+				     result=a/b;
+					 break;
+			   case '^':
+				     result=pow(a,b);
+					 break;
+			   case '$':
+					 result=pow(a,b);
+					 break;
+			   }
+			   result=result+48;
+			   push(result);
+		}
+		else
+		{
+			catche=pop();
+			result=catche-48;
+		}
+	}
+	
+}
+int main()
+{
+	postfix p;
+	char choice;
+	do
+	{
+	 cout<<"\t\t\tPress 1 to Input Postfix String"<<endl;
+	 cout<<"\t\t\tPress 2 to Evaluate postfix string"<<endl;
+	 cout<<"\t\t\tPress 3 to Display Answer"<<endl;
+	 cout<<"\t\t\tPress 4 to Exit"<<endl;
+	 cout<<"\n\t\t\tEnter Your Choice: ";
+	 cin>>choice;
+	 switch(choice)
+	 {
+	 case '1':
+		 p.input();
+		 break;
+	 case '2':
+		 p.scan();
+		 break;
+	 case '3':
+		 p.display();
+		 break;
+	 case '4':
+		 exit(-1);
+	 default:
+		 cout<<"Invalid Choice";
+	 }
+	} while (true);
+	system("pause");
+	return 0;
+}
